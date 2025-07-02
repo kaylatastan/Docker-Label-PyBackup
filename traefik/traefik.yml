@@ -1,0 +1,21 @@
+api:
+  insecure: true  # Dashboard için insecure erişim (development amaçlı)
+  #BU kısım tehlikeli kapatmayı unutmadığın sürece http olarak çalışır https değil
+#dashboard: true
+#insecure: false
+
+entryPoints:
+  web:
+    address: ":80" # ➤ HTTP trafiği için 80 portu
+  websecure:
+    address: ":443" # ➤ HTTPS trafiği için 443 portu
+
+providers:
+  docker:
+    exposedByDefault: false # ➤ Tüm konteynerları otomatik expose etme
+    network: web  # Docker network adı ➤ Docker ağ adı (docker-compose'daki network)
+    endpoint: "unix:///var/run/docker.sock" # ➤ Docker socket bağlantısı
+log:
+  level: DEBUG  # ➤ Detaylı log (development için kullanışlı)
+
+

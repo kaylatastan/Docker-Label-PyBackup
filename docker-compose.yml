@@ -1,0 +1,56 @@
+services:
+  mysql:
+    image: mariadb:10.6
+    container_name: mysql-database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: sampledb
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - database-network
+    labels:
+      - "backup.enabled=true"
+      - "backup.database.type=mysql"
+      - "backup.database.name=mysql-database"
+      - "backup.database.version=mariadb-10.6"
+      - "backup.retention.days=30"
+      - "backup.priority=high"
+
+  backup-service:
+    build: ./backup-service
+    container_name: database-backup-service
+    depends_on:
+      - mysql
+    volumes:
+      - ./backups:/app/backups
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - BACKUP_INTERVAL_HOURS=6  # Backup every 6 hours
+      - BACKUP_FORMAT=both       # both, csv, or sql
+    restart: unless-stopped
+    networks:
+      - database-network
+    labels:
+      - "service.type=backup"
+      - "service.name=database-backup-service"
+      - "service.description=Automated MySQL database backup service"
+      - "service.backup.formats=csv,sql"
+      - "service.backup.schedule=every-6-hours"
+      - "service.backup.retention=7-days"
+      - "service.monitoring=enabled"
+      - "service.logs=enabled"
+
+networks:
+  database-network:
+    driver: bridge
+    labels:
+      - "network.type=database"
+      - "network.purpose=mysql-backup-system"
