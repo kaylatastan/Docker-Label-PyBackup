@@ -81,7 +81,7 @@ docker exec -it mysql mysql -u root -p
 | `DB_HOST` | `mysql` | Database hostname |
 | `DB_PORT` | `3306` | Database port |
 | `DB_USER` | `root` | Database username |
-| `DB_PASSWORD` | `rootpassword` | Database password |
+| `DB_PASSWORD` | ***| Database password |
 | `BACKUP_INTERVAL_HOURS` | `6` | Backup frequency in hours |
 | `BACKUP_FORMAT` | `both` | Backup format: `csv`, `sql`, or `both` |
 
@@ -274,5 +274,6 @@ environment:
 - Network access is restricted to Docker internal network
 
 ## License
+
 
 This project is provided as-is for educational and development purposes.
