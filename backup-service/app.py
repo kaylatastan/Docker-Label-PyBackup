@@ -25,10 +25,15 @@ logger = logging.getLogger(__name__)
 DB_HOST = os.environ.get('DB_HOST', 'mysql')
 DB_PORT = int(os.environ.get('DB_PORT', 3306))
 DB_USER = os.environ.get('DB_USER', 'root')
-DB_PASSWORD = os.environ.get('DB_PASSWORD', 'rootpassword')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
 BACKUP_DIR = '/app/backups'
 BACKUP_INTERVAL = int(os.environ.get('BACKUP_INTERVAL_HOURS', 24))  # Default: 24 hours
 BACKUP_FORMAT = os.environ.get('BACKUP_FORMAT', 'both')  # csv, sql, or both
+
+if not DB_PASSWORD:
+    raise RuntimeError(
+        "DB_PASSWORD is not set. Provide it via environment variables (recommended via a local .env file)."
+    )
 
 class DatabaseBackupService:
     def __init__(self):
@@ -198,7 +203,6 @@ class DatabaseBackupService:
                 f'--host={DB_HOST}',
                 f'--port={DB_PORT}',
                 f'--user={DB_USER}',
-                f'--password={DB_PASSWORD}',
                 '--single-transaction',
                 '--routines',
                 '--triggers',
@@ -225,7 +229,10 @@ class DatabaseBackupService:
                 f.write(f"\n")
                 
                 # Execute mysqldump and write to file
-                result = subprocess.run(cmd, stdout=f, stderr=subprocess.PIPE, text=True)
+                env = dict(os.environ)
+                # Avoid passing the password via process args; mysqldump reads it from MYSQL_PWD.
+                env['MYSQL_PWD'] = DB_PASSWORD
+                result = subprocess.run(cmd, stdout=f, stderr=subprocess.PIPE, text=True, env=env)
                 
                 if result.returncode != 0:
                     logger.error(f"mysqldump failed: {result.stderr}")

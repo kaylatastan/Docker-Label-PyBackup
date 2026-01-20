@@ -1,8 +1,8 @@
 api:
-  insecure: true  # Dashboard için insecure erişim (development amaçlı)
-  #BU kısım tehlikeli kapatmayı unutmadığın sürece http olarak çalışır https değil
-#dashboard: true
-#insecure: false
+  # Keep the dashboard disabled/insecure=false by default.
+  # If you enable it for local development, NEVER expose it publicly.
+  dashboard: true
+  insecure: false
 
 entryPoints:
   web:
@@ -16,6 +16,6 @@ providers:
     network: web  # Docker network adı ➤ Docker ağ adı (docker-compose'daki network)
     endpoint: "unix:///var/run/docker.sock" # ➤ Docker socket bağlantısı
 log:
-  level: DEBUG  # ➤ Detaylı log (development için kullanışlı)
+  level: INFO  # DEBUG only for local troubleshooting
 
 

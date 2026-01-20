@@ -69,7 +69,7 @@ ls -la backups/
 ```bash
 # Connect to MySQL
 docker exec -it mysql mysql -u root -p
-# Password: rootpassword
+# Password: (set via your local .env)
 ```
 
 ## Configuration
@@ -81,7 +81,7 @@ docker exec -it mysql mysql -u root -p
 | `DB_HOST` | `mysql` | Database hostname |
 | `DB_PORT` | `3306` | Database port |
 | `DB_USER` | `root` | Database username |
-| `DB_PASSWORD` | ***| Database password |
+| `DB_PASSWORD` | *(required)* | Database password (do not commit; set via `.env`) |
 | `BACKUP_INTERVAL_HOURS` | `6` | Backup frequency in hours |
 | `BACKUP_FORMAT` | `both` | Backup format: `csv`, `sql`, or `both` |
 
@@ -234,7 +234,7 @@ docker-compose restart backup-service
 ### Database Access
 ```bash
 # MySQL shell access
-docker exec -it mysql mysql -u root -prootpassword
+docker exec -it mysql mysql -u root -p
 
 # Show databases
 SHOW DATABASES;
@@ -268,8 +268,8 @@ environment:
 
 ## Security Considerations
 
-- Database passwords are stored in plain text in docker-compose.yml
-- For production use, consider using Docker secrets or environment files
+- Do not commit real credentials. Use a local `.env` file (gitignored) or Docker secrets.
+- If this repository was ever pushed with real credentials, rotate those credentials immediately.
 - Backup files may contain sensitive data - secure the backup directory
 - Network access is restricted to Docker internal network
 

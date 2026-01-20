@@ -162,13 +162,21 @@ cleanup_backups() {
 # Connect to MySQL database
 connect_mysql() {
     log_info "Connecting to MySQL database..."
-    docker-compose exec mysql mysql -u root -prootpassword
+    if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
+        log_error "MYSQL_ROOT_PASSWORD is not set. Export it or load it from a .env file before running this command."
+        exit 1
+    fi
+    docker-compose exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql mysql -u root
 }
 
 # Show database information
 show_databases() {
     log_info "Available databases:"
-    docker-compose exec mysql mysql -u root -prootpassword -e "SHOW DATABASES;" 2>/dev/null || \
+    if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
+        log_error "MYSQL_ROOT_PASSWORD is not set. Export it or load it from a .env file before running this command."
+        exit 1
+    fi
+    docker-compose exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql mysql -u root -e "SHOW DATABASES;" 2>/dev/null || \
         log_error "Cannot connect to database (service may not be running)"
 }
 

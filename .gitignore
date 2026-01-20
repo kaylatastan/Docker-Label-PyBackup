@@ -1,0 +1,23 @@
+# Secrets
+.env
+.env.*
+
+# Local databases / volumes
+mysql-data/
+
+# Backup outputs (keep backups/ folder itself)
+backups/*
+!backups/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/
