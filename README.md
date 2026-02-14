@@ -265,16 +265,9 @@ environment:
   - BACKUP_FORMAT=csv    # Only CSV exports
   - BACKUP_FORMAT=both   # Both formats (default)
 ```
-
-## Security Considerations
-
-- Do not commit real credentials. Use a local `.env` file (gitignored) or Docker secrets.
-- If this repository was ever pushed with real credentials, rotate those credentials immediately.
-- Backup files may contain sensitive data - secure the backup directory
-- Network access is restricted to Docker internal network
-
 ## License
 
 
 This project is provided as-is for educational and development purposes.
+
 
